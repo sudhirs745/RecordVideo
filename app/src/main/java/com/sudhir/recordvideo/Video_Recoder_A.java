@@ -29,10 +29,8 @@ import com.googlecode.mp4parser.authoring.Track;
 import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
 import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
 import com.googlecode.mp4parser.authoring.tracks.AppendTrack;
-
 import com.sudhir.recordvideo.SegmentProgress.ProgressBarListener;
 import com.sudhir.recordvideo.SegmentProgress.SegmentedProgressBar;
-import com.sudhir.recordvideo.utils.Functions;
 import com.sudhir.recordvideo.utils.Variables;
 import com.wonderkiln.camerakit.CameraKit;
 import com.wonderkiln.camerakit.CameraKitError;
@@ -51,10 +49,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class VideoRecoderActivity extends AppCompatActivity implements View.OnClickListener {
+public class Video_Recoder_A extends AppCompatActivity implements View.OnClickListener {
 
-
-    String TAG = "VideoRecoderActivity";
 
     CameraView cameraView;
 
@@ -76,8 +72,6 @@ public class VideoRecoderActivity extends AppCompatActivity implements View.OnCl
     ImageButton rotate_camera;
 
     public static int Sounds_list_Request_code = 1;
-    TextView add_sound_txt;
-
 
     int sec_passed = 0;
 
@@ -99,34 +93,24 @@ public class VideoRecoderActivity extends AppCompatActivity implements View.OnCl
         cameraView.addCameraKitListener(new CameraKitEventListener() {
             @Override
             public void onEvent(CameraKitEvent cameraKitEvent) {
-
-                Log.e(TAG, "onEvent: " + cameraKitEvent.getMessage() );
             }
 
             @Override
             public void onError(CameraKitError cameraKitError) {
-
-                Log.e(TAG, "onError: " + cameraKitError.getMessage() );
             }
 
             @Override
             public void onImage(CameraKitImage cameraKitImage) {
-                Log.e(TAG, "onImage: " + cameraKitImage.getMessage() );
             }
 
             @Override
             public void onVideo(CameraKitVideo cameraKitVideo) {
-
-                Log.e(TAG, "onVideo: " + cameraKitVideo.getMessage() );
 
             }
         });
 
 
         record_image = findViewById(R.id.record_image);
-
-
-        findViewById(R.id.upload_layout).setOnClickListener(this);
 
 
         done_btn = findViewById(R.id.done);
@@ -140,17 +124,6 @@ public class VideoRecoderActivity extends AppCompatActivity implements View.OnCl
         flash_btn.setOnClickListener(this);
 
         findViewById(R.id.Goback).setOnClickListener(this);
-
-        add_sound_txt = findViewById(R.id.add_sound_txt);
-        add_sound_txt.setOnClickListener(this);
-
-
-        Intent intent = getIntent();
-        if (intent.hasExtra("sound_name")) {
-            add_sound_txt.setText(intent.getStringExtra("sound_name"));
-            Variables.Selected_sound_id = intent.getStringExtra("sound_id");
-            PreparedAudio();
-        }
 
 
         // this is code hold to record the video
@@ -190,9 +163,7 @@ public class VideoRecoderActivity extends AppCompatActivity implements View.OnCl
 
         });
 
-
         initlize_Video_progress();
-
 
     }
 
@@ -234,10 +205,6 @@ public class VideoRecoderActivity extends AppCompatActivity implements View.OnCl
             cameraView.captureVideo(file);
 
 
-            if (audio != null)
-                audio.start();
-
-
             video_progress.resume();
 
 
@@ -247,7 +214,6 @@ public class VideoRecoderActivity extends AppCompatActivity implements View.OnCl
             record_image.setImageDrawable(getResources().getDrawable(R.drawable.ic_recoding_yes));
 
             camera_options.setVisibility(View.GONE);
-            add_sound_txt.setClickable(false);
             rotate_camera.setVisibility(View.GONE);
 
         } else if (is_recording) {
@@ -256,9 +222,6 @@ public class VideoRecoderActivity extends AppCompatActivity implements View.OnCl
 
             video_progress.pause();
             video_progress.addDivider();
-
-            if (audio != null)
-                audio.pause();
 
             cameraView.stopVideo();
 
@@ -272,7 +235,7 @@ public class VideoRecoderActivity extends AppCompatActivity implements View.OnCl
             camera_options.setVisibility(View.VISIBLE);
 
         } else if (sec_passed > (Variables.recording_duration / 1000)) {
-            Functions.Show_Alert(this, "Alert", "Video only can be a " + (int) Variables.recording_duration / 1000 + " S");
+            // Functions.Show_Alert(this, "Alert", "Video only can be a " + (int) Variables.recording_duration / 1000 + " S");
         }
 
 
@@ -281,12 +244,10 @@ public class VideoRecoderActivity extends AppCompatActivity implements View.OnCl
 
     // this will apped all the videos parts in one  fullvideo
     private boolean append() {
-        final ProgressDialog progressDialog = new ProgressDialog(VideoRecoderActivity.this);
+        final ProgressDialog progressDialog = new ProgressDialog(Video_Recoder_A.this);
         new Thread(new Runnable() {
             @Override
             public void run() {
-
-
                 runOnUiThread(new Runnable() {
                     public void run() {
 
@@ -302,7 +263,7 @@ public class VideoRecoderActivity extends AppCompatActivity implements View.OnCl
                     if (file.exists()) {
 
                         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-                        retriever.setDataSource(VideoRecoderActivity.this, Uri.fromFile(file));
+                        retriever.setDataSource(Video_Recoder_A.this, Uri.fromFile(file));
                         String hasVideo = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO);
                         boolean isVideo = "yes".equals(hasVideo);
 
@@ -347,11 +308,9 @@ public class VideoRecoderActivity extends AppCompatActivity implements View.OnCl
                     Container out = new DefaultMp4Builder().build(result);
 
                     String outputFilePath = null;
-                    if (audio != null) {
-                        outputFilePath = Variables.outputfile;
-                    } else {
-                        outputFilePath = Variables.outputfile2;
-                    }
+
+                    outputFilePath = Variables.outputfile2;
+
 
                     FileOutputStream fos = new FileOutputStream(new File(outputFilePath));
                     out.writeContainer(fos.getChannel());
@@ -361,13 +320,18 @@ public class VideoRecoderActivity extends AppCompatActivity implements View.OnCl
                         public void run() {
                             progressDialog.dismiss();
 
+
                             Go_To_preview_Activity();
+
 
                         }
                     });
 
 
                 } catch (Exception e) {
+
+                    Log.e("TAG", "run: " + e.toString());
+                    e.printStackTrace();
 
                 }
             }
@@ -428,54 +392,6 @@ public class VideoRecoderActivity extends AppCompatActivity implements View.OnCl
 
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Sounds_list_Request_code) {
-            if (data != null) {
-
-                if (data.getStringExtra("isSelected").equals("yes")) {
-                    add_sound_txt.setText(data.getStringExtra("sound_name"));
-                    Variables.Selected_sound_id = data.getStringExtra("sound_id");
-                    PreparedAudio();
-                }
-
-            }
-
-        }
-    }
-
-
-    // this will play the sound with the video when we select the audio
-    MediaPlayer audio;
-
-    public void PreparedAudio() {
-        File file = new File(Variables.app_folder + Variables.SelectedAudio_AAC);
-        if (file.exists()) {
-            audio = new MediaPlayer();
-            try {
-                audio.setDataSource(Variables.app_folder + Variables.SelectedAudio_AAC);
-                audio.prepare();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            mmr.setDataSource(this, Uri.fromFile(file));
-            String durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-            final int file_duration = Integer.parseInt(durationStr);
-
-            if (file_duration < Variables.max_recording_duration) {
-                Variables.recording_duration = file_duration;
-                initlize_Video_progress();
-            }
-
-        }
-
-
-    }
-
-
-    @Override
     protected void onResume() {
         super.onResume();
         cameraView.start();
@@ -487,11 +403,6 @@ public class VideoRecoderActivity extends AppCompatActivity implements View.OnCl
         super.onDestroy();
         try {
 
-            if (audio != null) {
-                audio.stop();
-                audio.reset();
-                audio.release();
-            }
             cameraView.stop();
 
         } catch (Exception e) {
@@ -520,7 +431,7 @@ public class VideoRecoderActivity extends AppCompatActivity implements View.OnCl
 
                         DeleteFile();
                         finish();
-
+                        // overridePendingTransition(R.anim.in_from_top, R.anim.out_from_bottom);
 
                     }
                 }).show();
@@ -529,10 +440,9 @@ public class VideoRecoderActivity extends AppCompatActivity implements View.OnCl
 
 
     public void Go_To_preview_Activity() {
-        Intent intent = new Intent(this, PreviewVideoActivity.class);
+        Intent intent = new Intent(this, Preview_Video_A.class);
         startActivity(intent);
-        // overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left);
-
+        /// overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left);
     }
 
 

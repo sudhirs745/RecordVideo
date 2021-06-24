@@ -18,11 +18,15 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.RecordVideo">
+        android:theme="@style/Theme.RecordVideo"
+        android:usesCleartextTraffic="true">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,11 +36,11 @@
         </activity>
 
         <activity
-            android:name=".VideoRecoderActivity"
+            android:name=".Video_Recoder_A"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".PreviewVideoActivity"
+            android:name=".Preview_Video_A"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
     </application>

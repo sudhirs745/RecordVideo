@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
                 if (check_permissions()) {
                     //if(Variables.sharedPreferences.getBoolean(Variables.islogin,false)) {
 
-                    Intent intent = new Intent(MainActivity.this, VideoRecoderActivity.class);
+                    Intent intent = new Intent(MainActivity.this, Video_Recoder_A.class);
                     startActivity(intent);
 
                 }

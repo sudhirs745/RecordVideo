@@ -1,6 +1,5 @@
 package com.sudhir.recordvideo;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,8 +10,6 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.daasuu.gpuv.composer.GPUMp4Composer;
 import com.daasuu.gpuv.egl.filter.GlFilterGroup;
@@ -36,18 +33,16 @@ import com.sudhir.recordvideo.utils.Functions;
 import com.sudhir.recordvideo.utils.MovieWrapperView;
 import com.sudhir.recordvideo.utils.Variables;
 
-
 import java.util.List;
 
-public class PreviewVideoActivity extends AppCompatActivity implements Player.EventListener {
-
-    GPUPlayerView gpuPlayerView;
+public class Preview_Video_A extends AppCompatActivity implements Player.EventListener {
 
 
     String video_url;
 
-    public static int select_postion = 0;
+    GPUPlayerView gpuPlayerView;
 
+    public static int select_postion = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +59,6 @@ public class PreviewVideoActivity extends AppCompatActivity implements Player.Ev
             @Override
             public void onClick(View v) {
                 finish();
-                // overridePendingTransition(R.anim.in_from_left, R.anim.out_to_right);
 
             }
         });
@@ -93,8 +87,7 @@ public class PreviewVideoActivity extends AppCompatActivity implements Player.Ev
 
         DefaultTrackSelector trackSelector = new DefaultTrackSelector();
         player = ExoPlayerFactory.newSimpleInstance(this, trackSelector);
-        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this,
-                Util.getUserAgent(this, "TikTok"));
+        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this, Util.getUserAgent(this, "CreateBySudhir"));
 
         MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
                 .createMediaSource(Uri.parse(path));
@@ -157,7 +150,7 @@ public class PreviewVideoActivity extends AppCompatActivity implements Player.Ev
     protected void onDestroy() {
         super.onDestroy();
         if (player != null) {
-            player.removeListener(PreviewVideoActivity.this);
+            player.removeListener(Preview_Video_A.this);
             player.release();
             player = null;
         }
@@ -172,7 +165,6 @@ public class PreviewVideoActivity extends AppCompatActivity implements Player.Ev
         new GPUMp4Composer(srcMp4Path, destMp4Path)
                 .size(540, 960)
                 .videoBitrate((int) (0.25 * 16 * 540 * 960))
-                // .filter(new GlFilterGroup(FilterType.createGlFilter(filterTypes.get(select_postion), getApplicationContext())))
                 .listener(new GPUMp4Composer.Listener() {
                     @Override
                     public void onProgress(double progress) {
@@ -218,7 +210,7 @@ public class PreviewVideoActivity extends AppCompatActivity implements Player.Ev
 
                                     Functions.cancel_determinent_loader();
 
-                                    Toast.makeText(PreviewVideoActivity.this, "Try Again", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(Preview_Video_A.this, "Try Again", Toast.LENGTH_SHORT).show();
                                 } catch (Exception e) {
 
                                 }
@@ -233,9 +225,7 @@ public class PreviewVideoActivity extends AppCompatActivity implements Player.Ev
 
     public void GotopostScreen() {
 
-//        Intent intent =new Intent(Preview_Video_A.this,Post_Video_A.class);
-//        startActivity(intent);
-//        overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left);
+        Toast.makeText(this, "Video saved successfully", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -296,7 +286,6 @@ public class PreviewVideoActivity extends AppCompatActivity implements Player.Ev
     public void onBackPressed() {
 
         finish();
-        // overridePendingTransition(R.anim.in_from_left, R.anim.out_to_right);
 
     }
 
